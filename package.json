@@ -22,7 +22,6 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "publish": "npm run build && npm publish",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
