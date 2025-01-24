@@ -10,5 +10,5 @@
 
 ## Installation
 
-npm install fuse-ui
-import the styles globally from main.ts/main.tsx or app.ts/app.tsx -> import "fuse-ui/dist/fuse-ui.css";
+-npm install fuse-ui
+-import the styles globally from main.ts/main.tsx or app.ts/app.tsx -> import "fuse-ui/dist/fuse-ui.css";
