@@ -1,7 +1,3 @@
-# Official Repository for fuse-ui
-
-A modern React + TypeScript component library built with a focus on developer experience and flexibility. fuse-ui provides a collection of reusable, customizable UI components powered by Tailwind CSS.
-
 ## Features
 
 - 🚀 Built with React + TypeScript
@@ -15,3 +11,4 @@ A modern React + TypeScript component library built with a focus on developer ex
 ## Installation
 
 npm install fuse-ui
+import the styles globally from main.ts/main.tsx or app.ts/app.tsx -> import "fuse-ui/dist/fuse-ui.css";
