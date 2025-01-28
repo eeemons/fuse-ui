@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Sidebar } from "./Sidebar";
-import { useState } from "react";
+
 
 // Icons
 const DashboardIcon = () => (
@@ -41,26 +41,18 @@ const meta = {
   },
   decorators: [
     (Story, context) => {
-      const [isOpen, setIsOpen] = useState(context.args.isOpen || false);
       const darkMode = context.args.darkMode || false;
       
-      const args = {
-        ...context.args,
-        isOpen,
-        onClose: () => setIsOpen(false),
-        onToggle: () => setIsOpen(!isOpen),
-      };
-
       return (
         <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gray-100"}`}>
-          <Story args={args} />
-          <div className={`ml-16 ${args.position === "right" ? "mr-16" : ""}`}>
+          <Story args={context.args} />
+          <div className={`ml-16 ${context.args.position === "right" ? "mr-16" : ""}`}>
             <main className="max-w-4xl mx-auto p-4">
               <div className={`rounded-lg p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"}`}>
                 <h1 className="text-2xl font-bold mb-4">Main Content Area</h1>
                 <p className={`mb-4 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
                   Click the hamburger menu icon to toggle the sidebar.
-                  {args.showCloseButton && " You can also use the close button in the sidebar header."}
+                  {context.args.showCloseButton && " You can also use the close button in the sidebar header."}
                 </p>
               </div>
             </main>
@@ -70,13 +62,10 @@ const meta = {
     },
   ],
   argTypes: {
-    links: {
-      description: 'Array of links to be displayed in the sidebar',
-      control: 'object',
-    },
-    header: {
-      description: 'Header configuration for the sidebar',
-      control: 'object',
+    defaultOpen: {
+      description: 'Whether the sidebar should be open by default',
+      control: 'boolean',
+      defaultValue: false,
     },
     position: {
       description: 'Position of the sidebar',
@@ -105,11 +94,6 @@ const meta = {
       control: 'boolean',
       defaultValue: true,
     },
-    isOpen: {
-      description: 'Controls the open/closed state of the sidebar',
-      control: 'boolean',
-      defaultValue: false,
-    },
   },
   tags: ["autodocs"],
 } satisfies Meta<typeof Sidebar>;
@@ -119,9 +103,6 @@ type Story = StoryObj<typeof Sidebar>;
 
 export const Default: Story = {
   args: {
-    isOpen: true,
-    onClose: () => {},
-    onToggle: () => {},
     links: [
       {
         label: "Dashboard",
@@ -156,82 +137,32 @@ export const Default: Story = {
   },
 };
 
-export const RightAligned: Story = {
+export const DarkMode: Story = {
+  args: {
+    ...Default.args,
+    darkMode: true,
+  },
+};
+
+export const RightPosition: Story = {
   args: {
     ...Default.args,
     position: "right",
   },
 };
 
-export const DarkTheme: Story = {
+export const DefaultOpen: Story = {
   args: {
     ...Default.args,
-    darkMode: true,
-    className: "border-gray-700",
-    header: {
-      title: "Dark Theme",
-      subtitle: "With dark mode enabled",
-    },
-  },
-  parameters: {
-    backgrounds: {
-      default: 'dark',
-    },
+    defaultOpen: true,
   },
 };
 
-export const WideCustomStyle: Story = {
+export const WithStateChangeCallback: Story = {
   args: {
     ...Default.args,
-    width: "w-80",
-    className: "border-r border-gray-200",
-    header: {
-      title: "Wide Sidebar",
-      subtitle: "With custom width",
-    },
-  },
-};
-
-export const SmallIcon: Story = {
-  args: {
-    ...Default.args,
-    iconSize: "small",
-    header: {
-      title: "Small Icon",
-      subtitle: "Default size (16x16)",
-    },
-  },
-};
-
-export const MediumIcon: Story = {
-  args: {
-    ...Default.args,
-    iconSize: "medium",
-    header: {
-      title: "Medium Icon",
-      subtitle: "20x20 pixels",
-    },
-  },
-};
-
-export const LargeIcon: Story = {
-  args: {
-    ...Default.args,
-    iconSize: "large",
-    header: {
-      title: "Large Icon",
-      subtitle: "24x24 pixels",
-    },
-  },
-};
-
-export const WithoutCloseButton: Story = {
-  args: {
-    ...Default.args,
-    showCloseButton: false,
-    header: {
-      title: "No Close Button",
-      subtitle: "Using only toggle and click-outside",
+    onStateChange: (isOpen) => {
+      console.log("Sidebar state changed:", isOpen);
     },
   },
 };

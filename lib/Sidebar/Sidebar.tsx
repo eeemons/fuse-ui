@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useState } from "react";
 
 interface SidebarLinkItem {
   label: string;
@@ -10,13 +10,11 @@ interface SidebarLinkItem {
 
 interface SidebarComponentProps {
   children?: ReactNode;
-  isOpen?: boolean;
-  onClose?: () => void;
+  defaultOpen?: boolean;
   position?: "left" | "right";
   width?: string;
   className?: string;
   toggleIcon?: ReactNode;
-  onToggle: () => void;
   links?: SidebarLinkItem[];
   header?: {
     title?: string;
@@ -25,6 +23,7 @@ interface SidebarComponentProps {
   darkMode?: boolean;
   iconSize?: "small" | "medium" | "large";
   showCloseButton?: boolean;
+  onStateChange?: (isOpen: boolean) => void;
 }
 
 const HamburgerIcon: FC<{ darkMode?: boolean; size?: SidebarComponentProps["iconSize"] }> = ({ darkMode, size = "small" }) => {
@@ -79,25 +78,37 @@ const CloseIcon: FC<{ darkMode?: boolean; size?: SidebarComponentProps["iconSize
 
 const Sidebar = ({
   children,
-  isOpen = false,
-  onClose,
+  defaultOpen = false,
   position = "left",
   width = "w-64",
   className = "",
   toggleIcon,
-  onToggle,
   links = [],
   header,
   darkMode = false,
   iconSize = "small",
   showCloseButton = true,
+  onStateChange,
 }: SidebarComponentProps) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  const handleToggle = () => {
+    const newState = !isOpen;
+    setIsOpen(newState);
+    onStateChange?.(newState);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    onStateChange?.(false);
+  };
+
   const handleLinkClick = (link: SidebarLinkItem) => {
     if (link.onClick) {
       link.onClick();
     }
-    if (onClose && !link.isExternal) {
-      onClose();
+    if (!link.isExternal) {
+      handleClose();
     }
   };
 
@@ -105,7 +116,7 @@ const Sidebar = ({
     <div className="relative">
       {/* Toggle Button - Always visible */}
       <button
-        onClick={onToggle}
+        onClick={handleToggle}
         className={`
           fixed top-4 ${position === "left" ? "left-4" : "right-4"}
           z-50 ${iconSize === "small" ? "p-2" : iconSize === "medium" ? "p-2.5" : "p-3"} 
@@ -126,7 +137,7 @@ const Sidebar = ({
       {isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 transition-opacity z-40"
-          onClick={onClose}
+          onClick={handleClose}
         />
       )}
 
@@ -154,9 +165,9 @@ const Sidebar = ({
         <div className="flex-1 overflow-y-auto">
           {/* Header with Title and Close Button */}
           <div className="relative">
-            {showCloseButton && onClose && (
+            {showCloseButton && (
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 className={`
                   absolute top-2 right-2 z-10
                   p-1.5 rounded-lg transition-colors
