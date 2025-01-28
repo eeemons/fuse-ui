@@ -1,6 +1,6 @@
 import { FC, ReactNode } from "react";
 
-export interface SidebarLink {
+interface SidebarLinkItem {
   label: string;
   href?: string;
   icon?: ReactNode;
@@ -8,7 +8,7 @@ export interface SidebarLink {
   isExternal?: boolean;
 }
 
-export interface SidebarProps {
+interface SidebarComponentProps {
   children?: ReactNode;
   isOpen?: boolean;
   onClose?: () => void;
@@ -17,7 +17,7 @@ export interface SidebarProps {
   className?: string;
   toggleIcon?: ReactNode;
   onToggle: () => void;
-  links?: SidebarLink[];
+  links?: SidebarLinkItem[];
   header?: {
     title?: string;
     subtitle?: string;
@@ -27,7 +27,7 @@ export interface SidebarProps {
   showCloseButton?: boolean;
 }
 
-const HamburgerIcon: FC<{ darkMode?: boolean; size?: SidebarProps["iconSize"] }> = ({ darkMode, size = "small" }) => {
+const HamburgerIcon: FC<{ darkMode?: boolean; size?: SidebarComponentProps["iconSize"] }> = ({ darkMode, size = "small" }) => {
   const sizeClasses = {
     small: "w-4 h-4",
     medium: "w-5 h-5",
@@ -52,7 +52,7 @@ const HamburgerIcon: FC<{ darkMode?: boolean; size?: SidebarProps["iconSize"] }>
   );
 };
 
-const CloseIcon: FC<{ darkMode?: boolean; size?: SidebarProps["iconSize"] }> = ({ darkMode, size = "small" }) => {
+const CloseIcon: FC<{ darkMode?: boolean; size?: SidebarComponentProps["iconSize"] }> = ({ darkMode, size = "small" }) => {
   const sizeClasses = {
     small: "w-4 h-4",
     medium: "w-5 h-5",
@@ -77,7 +77,7 @@ const CloseIcon: FC<{ darkMode?: boolean; size?: SidebarProps["iconSize"] }> = (
   );
 };
 
-const Sidebar: FC<SidebarProps> = ({
+const Sidebar = ({
   children,
   isOpen = false,
   onClose,
@@ -91,8 +91,8 @@ const Sidebar: FC<SidebarProps> = ({
   darkMode = false,
   iconSize = "small",
   showCloseButton = true,
-}) => {
-  const handleLinkClick = (link: SidebarLink) => {
+}: SidebarComponentProps) => {
+  const handleLinkClick = (link: SidebarLinkItem) => {
     if (link.onClick) {
       link.onClick();
     }
@@ -261,4 +261,5 @@ const Sidebar: FC<SidebarProps> = ({
   );
 };
 
-export default Sidebar;
+export { Sidebar };
+export type { SidebarComponentProps as SidebarProps, SidebarLinkItem as SidebarLink };
