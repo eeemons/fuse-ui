@@ -61,7 +61,9 @@ export const TreeNode: React.FC<TreeNodeProps> = ({
             {expanded ? collapseIcon || "⌄" : expandIcon || "›"}
           </span>
         )}
-        {!node.children && <span className="w-4 mr-1.5" />}
+        {(node.children?.length ?? 0) === 0 && (
+          <span key="empty-node" className="w-4 mr-1.5" />
+        )}
         {node.icon && <span className="mr-1.5">{node.icon}</span>}
         <span>{node.label}</span>
       </div>
