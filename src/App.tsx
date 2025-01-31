@@ -102,12 +102,12 @@ function App() {
           selectable
           selectedKeys={[]}
           onNodeClick={(node) => console.log("Clicked:", node)}
-          onNodeDrop={(draggedId, targetId) =>
-            console.log("Dropped:", draggedId, "onto", targetId)
-          }
           onSelect={(selectedKeys, node) =>
             console.log("Selected:", selectedKeys, node)
           }
+          onNodeDrop={(draggedId, targetId) => {
+            console.log(`Moved node ${draggedId} to ${targetId}`);
+          }}
         />
       </div>
     </>

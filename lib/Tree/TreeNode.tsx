@@ -33,7 +33,7 @@ export const TreeNode: React.FC<TreeNodeProps> = ({
 }) => {
   return (
     <div
-      className="py-0.5 transition-all duration-200 ease-in-out text-sm"
+      className="py-0.5 relative transition-all duration-200 ease-in-out text-sm"
       role="treeitem"
     >
       <div
@@ -50,25 +50,34 @@ export const TreeNode: React.FC<TreeNodeProps> = ({
           onSelect?.();
         }}
       >
-        {node.children && node.children.length > 0 && (
-          <span
-            className="mr-1.5 transition-transform duration-200 hover:scale-110 text-gray-600 w-4 h-4 flex items-center justify-center"
-            onClick={(e) => {
-              e.stopPropagation();
-              onExpand?.();
-            }}
-          >
-            {expanded ? collapseIcon || "⌄" : expandIcon || "›"}
-          </span>
-        )}
-        {(node.children?.length ?? 0) === 0 && (
-          <span key="empty-node" className="w-4 mr-1.5" />
-        )}
-        {node.icon && <span className="mr-1.5">{node.icon}</span>}
-        <span>{node.label}</span>
+        <div className="flex items-center relative">
+          {showLines && (
+            <span className="absolute left-0 top-1/2 w-3 h-[1px] bg-gray-300" />
+          )}
+          {node.children && node.children.length > 0 && (
+            <span
+              className="mr-1.5 z-10 transition-transform duration-200 hover:scale-110 text-gray-600 w-4 h-4 flex items-center justify-center bg-white"
+              onClick={(e) => {
+                e.stopPropagation();
+                onExpand?.();
+              }}
+            >
+              {expanded ? collapseIcon || "⌄" : expandIcon || "›"}
+            </span>
+          )}
+          {(node.children?.length ?? 0) === 0 && showLines && (
+            <span className="w-4 mr-1.5 relative">
+              <span className="absolute left-0 top-1/2 w-3 h-[1px] bg-gray-300" />
+            </span>
+          )}
+          {node.icon && <span className="mr-1.5">{node.icon}</span>}
+          <span>{node.label}</span>
+        </div>
       </div>
       <div
-        className={`ml-4 pl-4 border-l border-dashed border-gray-200 overflow-hidden transition-all duration-300 ${
+        className={`ml-4 ${
+          showLines ? "pl-4 border-l border-gray-300" : ""
+        } overflow-hidden transition-all duration-300 ${
           expanded ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
         }`}
       >

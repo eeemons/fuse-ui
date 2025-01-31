@@ -26,7 +26,7 @@ export interface TreeProps {
   onNodeClick?: (node: TreeItem) => void;
   onNodeDrop?: (draggedId: NodeId, dropTargetId: NodeId) => void;
   className?: string;
-  showLines: boolean;
+  showLines?: boolean;
   defaultExpandAll: boolean;
   selectable: boolean;
   selectedKeys: NodeId[];
@@ -80,20 +80,19 @@ const Tree: React.FC<TreeProps> = ({
       ): [TreeItem | null, TreeData] => {
         let removedNode: TreeItem | null = null;
         const filterItems = (nodes: TreeData): TreeData => {
-          return nodes.reduce((acc: TreeData, node) => {
+          return nodes.filter((node) => {
             if (node.id === id) {
-              removedNode = node;
-              return acc;
+              removedNode = { ...node };
+              return false;
             }
             if (node.children) {
-              const newChildren = filterItems(node.children);
-              return [...acc, { ...node, children: newChildren }];
+              node.children = filterItems(node.children);
             }
-            return [...acc, node];
-          }, []);
+            return true;
+          });
         };
 
-        const newItems = filterItems(items);
+        const newItems = filterItems([...items]);
         return [removedNode, newItems];
       };
 
@@ -126,10 +125,18 @@ const Tree: React.FC<TreeProps> = ({
         treeData,
         draggedId
       );
+
       if (removedNode) {
         const newTree = insertNode(intermediateTree, targetId, removedNode);
         setTreeData(newTree);
         onNodeDrop?.(draggedId, targetId);
+
+        // Automatically expand the target node when dropping
+        setExpandedKeys((prev) => {
+          const next = new Set(prev);
+          next.add(targetId);
+          return next;
+        });
       }
     },
     [treeData, onNodeDrop]
