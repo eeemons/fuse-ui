@@ -5,8 +5,51 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../lib/Accordion/Accordion";
+import Tree, { TreeItem } from "../lib/Tree/Tree";
 
 function App() {
+  const sampleData: TreeItem[] = [
+    {
+      id: "1",
+      label: "Root",
+      children: [
+        {
+          id: "1-1",
+          label: "Child 1",
+          children: [
+            {
+              id: "1-1-1",
+              label: "Grandchild 1",
+              children: [
+                {
+                  id: "1-1-1-1",
+                  label: "Grand Grandchild 1",
+                },
+                {
+                  id: "1-1-1-2",
+                  label: "Grand Grandchild 2",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "1-2",
+          label: "Child 2",
+          children: [
+            {
+              id: "1-2-1",
+              label: "Grandchild 1",
+            },
+            {
+              id: "1-2-2",
+              label: "Grandchild 2",
+            },
+          ],
+        },
+      ],
+    },
+  ];
   return (
     <>
       <div className="text-xl">
@@ -49,9 +92,25 @@ function App() {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+
+        {/* Usage example */}
+        <Tree
+          data={sampleData}
+          draggable={true}
+          showLines
+          defaultExpandAll
+          selectable
+          selectedKeys={[]}
+          onNodeClick={(node) => console.log("Clicked:", node)}
+          onNodeDrop={(draggedId, targetId) =>
+            console.log("Dropped:", draggedId, "onto", targetId)
+          }
+          onSelect={(selectedKeys, node) =>
+            console.log("Selected:", selectedKeys, node)
+          }
+        />
       </div>
     </>
   );
 }
-
 export default App;
